@@ -5,26 +5,29 @@ tags:
   - index
   - cerulea
   - home
-description: Wiki de consulta dos jogadores de Fragmentos de um Sonho Cerúleo
+description: Wiki para consulta dos jogadores da campanha Fragmentos de um Sonho Cerúleo
 ---
 > *"Nunca confie apenas no que os olhos élficos veem."*
 > — Atribuído a um clarivistoriador anônimo, 3ª Partitura da Era das Flores
 
-# Bem-vindos a Cerulea
+# Bem-vindos a Cerulea!
 
-Esta wiki é o compêndio compartilhado do grupo para a campanha **Fragmentos de um Sonho Cerúleo**. Aqui ficam registradas as informações que seus personagens conheceram, investigaram ou testemunharam ao longo das sessões — lore do mundo, pessoas que cruzaram seu caminho, lugares visitados e pistas coletadas.
+Esta wiki é o compêndio para a campanha **Fragmentos de um Sonho Cerúleo**.
 
-Tudo o que está aqui é **conhecimento disponível** aos personagens, seja por educação formal, tradição oral, investigação em campo ou revelação em sessão. Se algo ainda não apareceu em jogo, provavelmente ainda não estará documentado. Novas páginas são adicionadas conforme o grupo avança.
+Aqui estão registradas as informações que seus personagens conheceram, investigaram ou testemunharam ao longo das sessões — lore do mundo, pessoas que cruzaram seu caminho, lugares visitados e pistas coletadas.
+
+Todo conteúdo é **conhecimento disponível** aos personagens, seja por educação formal, tradição oral, investigação ou revelação em jogo. Novas páginas são adicionadas conforme o grupo avança.
 
 
-> [!warning] Aviso aos jogadores
-> Esta wiki reflete o que os **personagens** sabem — não necessariamente o que é verdade. Registros históricos em Cerulea foram apagados, reescritos e distorcidos ao longo de três eras. Contradições entre fontes são propositais. Questione tudo.
+> [!warning] Aviso aos leitores
+> 
+> Esta wiki reflete o que os **personagens** sabem, que não necessariamente reflete a verdade canônica. Registros históricos em Cerulea foram apagados, reescritos e distorcidos ao longo de três eras. Contradições entre fontes são comuns.
 
 ---
 
-## 🌊 O Mundo
+## 🗺️ O Mundo
 
-Cerulea é uma nação jovem construída sobre ruínas antigas. Cinco **províncias livres**, um **Alto Conselho** descentralizado, e um **Pacto** que sustenta uma paz frágil há pouco mais de quarenta Partituras. Por fora, reconstrução e esperança. Por dentro, feridas de três eras que ninguém sabe direito como fechar.
+Cerulea é uma nação jovem construída sobre ruínas antigas. Cinco **províncias livres**, um **Alto Conselho**, e um **Pacto** que sustenta uma paz frágil há pouco mais de quarenta Partituras. Por fora, reconstrução e esperança. Por dentro, feridas de três eras que ninguém sabe direito como fechar.
 
 - [[Geografia]] — terras, climas, regiões naturais
 - [[Províncias]] — as cinco províncias livres e suas cidades-estado
@@ -33,8 +36,8 @@ Cerulea é uma nação jovem construída sobre ruínas antigas. Cinco **provínc
   - [[Dákry]]
   - [[Ilha das Correntes]]
   - [[Cerulea do Sul]]
-- [[História]] — eras, marcos, linha do tempo
-- [[Calendário Cerúleo]] — Partituras, Movimentos, Compassos e Tempos
+- [[História]]
+- [[Calendário Cerúleo]]
 
 ---
 
@@ -60,7 +63,8 @@ O exército federativo das províncias livres — catorze batalhões, cada um vi
 - [[Comandantes dos Batalhões|Os Catorze Comandantes]]
 
 > [!info] Dica de navegação
-> Cada comandante tem sua própria página com o que os personagens observaram dele em sessão e o que é de conhecimento público.
+>
+>Cada comandante tem sua própria página com o que os personagens observaram dele em sessão e o que é de conhecimento público.
 
 ---
 
@@ -78,16 +82,15 @@ Para os cerúleos, o mundo é uma orquestra e as divindades são seus intérpret
 
 ---
 
-## 👥 Personagens
-
-### Os Quatro
+##  👤Personagens dos jogadores
 
 - [[Ignis]] — kobold drakona, abençoado por Anakren
 - [[Katrac]] — fauno cego, caçador de uma verdade perdida
 - [[Morruk Gearfist]] — orc-clank, veterano da Era do Sangue
 - [[Stac]] — fauno feiticeiro, portador de um poder que não domina
 
-### Contatos e Conhecidos
+---
+### ✉️ Contatos e Conhecidos
 
 - [[Erinderu]] — ex-katari, ex-Filho do Ouro, retornado aos Sentinelas
 - [[Kars]] — o Catalogador de Estrelas
@@ -112,14 +115,12 @@ Cerulea é mosaico. Elfos, humanos, anões, fadas, halflings, goblins, orcs, inf
 
 ---
 
-## 🗺️ Lugares Relevantes
+## 📍 Lugares
 
-Locais que o grupo visitou, investigou ou sobre os quais colheu informações importantes.
+Locais que o grupo visitou, investigou ou sobre os quais colheu informações.
 
 - [[Torre dos Milagres]] — instalação arcano-ritual ao sul de Magnea
 - [[Tegeas]] — cidade-santuário de Dákry
-- [[Magnea]] — capital de Empódia
-- [[Miras]] — destino atual da jornada
 - [[Catedral Anil]] — o templo reaberto ao fim da Era do Sangue
 - [[A Barreira Oriental]] — a linha de selos de âmbar que contém a Pestilência
 
@@ -129,17 +130,15 @@ Locais que o grupo visitou, investigou ou sobre os quais colheu informações im
 
 A doença sobrenatural que moldou o isolamento de Cerulea. Contida — por ora — pela Barreira Oriental. Mas há quem sussurre que ela aprende.
 
-- [[Pestilência]] — o que se sabe, o que se teme
-- [[Restos Pestilentos]] — os corrompidos
+- [[Pestilência]]
+- [[Restos Pestilentos]]
 - [[Observador da Pestilência]]
 
 ---
 
 ## 🏛️ Facções e Organizações
 
-O jogo político de Cerulea não está todo à vista.
-
-- [[Filhos do Ouro]] — os retornistas que negam a morte de Athânatos
+- [[Filhos do Ouro]] — retornistas que negam a morte de Athânatos
 - [[Juízes das Profundezas]] — os quatro encapuzados de Tegeas
 - [[Ordem de Safira]] — a tradição teocrática de Dákry
 
@@ -155,8 +154,9 @@ Histórias que os personagens ouviram em tavernas, leram em pergaminhos ou receb
 - [[O Desaparecimento de Athânatos]] — a pergunta que ninguém responde igual
 - [[Registros Contraditórios]] — o que os arquivos dizem, e o que apagaram
 
-> [!quote] Fragmento do Códice Oriental, folha 112 (restaurada)
-> *"...e a chama foi contida. Dizem que morreu. Dizem muitas coisas. As pedras que eu escavei, porém, ainda estão quentes."*
+> [!quote] Fragmento do Códice Oriental - folha 112 (restaurada)
+ > 
+>*"...e a chama foi contida. Dizem que morreu. Dizem muitas coisas. As pedras que eu escavei, porém, ainda estão quentes."*
 
 ---
 
@@ -172,14 +172,11 @@ Histórias que os personagens ouviram em tavernas, leram em pergaminhos ou receb
 ## 🧭 Como usar esta wiki
 
 - **Links em azul** levam a páginas existentes.
-- **Links acinzentados ou quebrados** indicam tópicos mencionados mas ainda não desenvolvidos — às vezes porque o grupo ainda não investigou, às vezes porque a informação simplesmente não existe em lugar algum.
-- **Backlinks** (no painel lateral) mostram todas as páginas que mencionam o termo que você está lendo. Útil para rastrear conexões.
+- **Links acinzentados ou quebrados** indicam tópicos mencionados mas ainda não desenvolvidos
+- **Backlinks** (no painel lateral) mostram todas as páginas que mencionam o termo que você está lendo e é útil para rastrear conexões.
 - **Busca** (`Ctrl+K` / `⌘+K`) funciona por título e conteúdo.
-- **Grafo** visualiza as conexões entre páginas — recomendado para ver onde o mundo se entrelaça.
+- **Gráfico** visualiza as conexões entre páginas.
 
 > [!tip] Nota da Mestre
-> Se algo parece faltar, provavelmente está faltando por um motivo. Se algo parece inconsistente entre páginas, provavelmente está inconsistente por um motivo.
-
----
-
-*Última atualização: 43ª Partitura da Era das Flores*
+>
+> Se algo parece faltar, pode ser um assunto que não tem registros. Se algo parece inconsistente entre páginas, provavelmente há divergências de visões motivo.
