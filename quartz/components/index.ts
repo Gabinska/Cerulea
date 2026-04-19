@@ -23,6 +23,7 @@ import Breadcrumbs from "./Breadcrumbs"
 import Comments from "./Comments"
 import Flex from "./Flex"
 import ConditionalRender from "./ConditionalRender"
+import CeruleaPageTitle from "./CeruleaPageTitle"
 
 export {
   ArticleTitle,
@@ -33,6 +34,7 @@ export {
   ReaderMode,
   Head,
   PageTitle,
+  CeruleaPageTitle,
   ContentMeta,
   Spacer,
   TableOfContents,
