@@ -90,7 +90,7 @@ Para os cerúleos, o mundo é uma orquestra e as divindades são seus intérpret
 - [[Stac]] — fauno feiticeiro, portador de um poder que não domina
 
 ---
-### ✉️ Contatos e Conhecidos
+## ✉️ Contatos e Conhecidos
 
 - [[Erinderu]] — ex-katari, ex-Filho do Ouro, retornado aos Sentinelas
 - [[Kars]] — o Catalogador de Estrelas
