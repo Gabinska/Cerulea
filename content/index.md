@@ -172,12 +172,10 @@ Histórias que os personagens ouviram em tavernas, leram em pergaminhos ou receb
 
 ## 🧭 Como usar esta wiki
 
-- **Links em azul** levam a páginas existentes.
-- **Links acinzentados ou quebrados** indicam tópicos mencionados mas ainda não desenvolvidos
 - **Backlinks** (no painel lateral) mostram todas as páginas que mencionam o termo que você está lendo e é útil para rastrear conexões.
 - **Busca** (`Ctrl+K` / `⌘+K`) funciona por título e conteúdo.
-- **Gráfico** visualiza as conexões entre páginas.
+- **Visão de Gráfico** visualiza as conexões entre páginas.
 
 > [!tip] Nota da Mestre
 >
-> Se algo parece faltar, pode ser um assunto que não tem registros. Se algo parece inconsistente entre páginas, provavelmente há divergências de visões motivo.
+> Se algo parece faltar, pode ser um assunto que não tem registros. Se algo parece inconsistente entre páginas, provavelmente há divergências.
