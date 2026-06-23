@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A sala de uma cabana construída no meio de um campo de flores</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&family=Philosopher:wght@400;700&family=Uncial+Antiqua&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ceruleo-imperial: #2E5C94;
+      --ceruleo-profundo: #1B3D6B;
+      --ceu-allavyn:      #7BA4D1;
+      --ouro-pacto:       #C8960C;
+      --ouro-envelhecido: #8B6914;
+      --creme-pergaminho: #F5F0E8;
+      --marfim-quente:    #EDE4D3;
+      --carvao-ceruleano: #1F2A2E;
+      --cinza-nevoa:      #8A9199;
+      --coral-empodia:    #E85A4F;
+      --fonte-corpo:      "Nunito", sans-serif;
+      --fonte-titulo:     "Philosopher", serif;
+      --fonte-monumental: "Uncial Antiqua", serif;
+      --fundo-cena:   #14181a;
+      --veu:          rgba(15, 20, 22, 0.93);
+      --texto-claro:  var(--creme-pergaminho);
+      --legenda-larg: clamp(300px, 33vw, 640px);
+    }
+    html, body { margin: 0; height: 100%; }
+    body {
+      font-family: var(--fonte-corpo);
+      color: var(--texto-claro);
+    }
+    .viewport {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      background: var(--fundo-cena);
+      cursor: grab;
+    }
+    .mundo {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.12s ease-out;
+    }
+    .mundo.arrastando-cena { transition: none; }
+    .sala {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .mascara {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s, filter 0.25s;
+    }
+    .mascara.ativa {
+      opacity: 0.5;
+      filter: drop-shadow(0 0 8px  rgba(200,150,12,0.95))
+              drop-shadow(0 0 20px rgba(200,150,12,0.8))
+              drop-shadow(0 0 40px rgba(139,105,20,0.6));
+    }
+    .reveal-tudo {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s, filter 0.4s;
+    }
+    .reveal-tudo.ativa {
+      opacity: 0.55;
+      filter: drop-shadow(0 0 8px  rgba(200,150,12,0.95))
+              drop-shadow(0 0 20px rgba(200,150,12,0.8))
+              drop-shadow(0 0 40px rgba(139,105,20,0.6));
+    }
+    .intro {
+      position: fixed;
+      top: 30px;
+      left: 34px;
+      z-index: 6;
+      max-width: 42%;
+      font-family: var(--fonte-titulo);
+      font-size: clamp(18px, 2.4vw, 28px);
+      font-style: italic;
+      line-height: 1.4;
+      color: var(--creme-pergaminho);
+      text-shadow: 0 2px 14px rgba(0,0,0,0.85), 0 0 30px rgba(0,0,0,0.6);
+      pointer-events: none;
+    }
+    .painel {
+      position: fixed;
+      top: 28px;
+      right: 28px;
+      z-index: 6;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .painel .btn {
+      width: 46px;
+      height: 46px;
+    }
+    .btn {
+      appearance: none;
+      font-family: var(--fonte-corpo);
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: 0.02em;
+      color: var(--texto-claro);
+      border: 1px solid rgba(200,150,12,0.5);
+      background: rgba(31,42,46,0.78);
+      padding: 9px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn:hover {
+      background: rgba(200,150,12,0.22);
+      border-color: var(--ouro-pacto);
+    }
+    .btn[hidden] { display: none; }
+    .btn svg { display: block; }
+    .btn-ajuda.ligado {
+      background: rgba(200,150,12,0.3);
+      border-color: var(--ouro-pacto);
+    }
+    .tip { position: relative; }
+    .tip::after {
+      content: attr(data-tip);
+      position: absolute;
+      top: 50%;
+      right: calc(100% + 12px);
+      transform: translateY(-50%);
+      white-space: nowrap;
+      background: rgba(20,24,26,0.96);
+      color: var(--creme-pergaminho);
+      border: 1px solid rgba(200,150,12,0.6);
+      font-family: var(--fonte-corpo);
+      font-size: 14px;
+      padding: 7px 12px;
+      border-radius: 8px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s;
+    }
+    .tip:hover::after { opacity: 1; }
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      background: var(--veu);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .overlay.aberto { display: flex; }
+    .palco {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: grab;
+    }
+    .palco.arrastando { cursor: grabbing; }
+    .peca-grande {
+      max-width: 92%;
+      max-height: 82%;
+      object-fit: contain;
+      filter: drop-shadow(0 20px 50px rgba(0,0,0,0.7));
+      transform: translate(0px, 0px) scale(1);
+      transition: transform 0.12s ease-out;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+    .peca-grande.arrastando-peca { transition: none; }
+    .legenda-dock {
+      position: fixed;
+      right: 0;
+      bottom: 104px;
+      z-index: 12;
+      display: none;
+      pointer-events: none;
+    }
+    .legenda-dock.visivel { display: block; }
+    .legenda {
+      position: relative;
+      box-sizing: border-box;
+      width: var(--legenda-larg);
+      max-height: calc(100vh - 128px);
+      overflow-y: auto;
+      background: rgba(15,20,22,0.82);
+      border: 1px solid rgba(200,150,12,0.45);
+      border-right: none;
+      border-radius: 10px 0 0 10px;
+      padding: 18px 24px 18px 32px;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+      pointer-events: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(200,150,12,0.45) transparent;
+      transition: transform 0.35s ease;
+    }
+    .legenda::-webkit-scrollbar { width: 8px; }
+    .legenda::-webkit-scrollbar-track { background: transparent; }
+    .legenda::-webkit-scrollbar-thumb {
+      background: rgba(200,150,12,0.45);
+      border-radius: 4px;
+    }
+    .legenda.recolhida { transform: translateX(110%); }
+    .legenda h2 {
+      font-family: var(--fonte-titulo);
+      font-weight: 700;
+      font-size: 20px;
+      margin: 0 0 8px;
+      color: var(--ceu-allavyn);
+    }
+    .legenda p {
+      font-family: var(--fonte-corpo);
+      font-weight: 400;
+      font-size: 15px;
+      line-height: 1.5;
+      margin: 0;
+      color: var(--creme-pergaminho);
+      white-space: pre-line;
+    }
+    .legenda-puxador {
+      position: absolute;
+      top: 50%;
+      right: calc(var(--legenda-larg) - 22px);
+      transform: translateY(-50%);
+      z-index: 1;
+      box-sizing: border-box;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid rgba(200,150,12,0.6);
+      background: rgba(20,24,26,0.96);
+      color: var(--ouro-pacto);
+      font-family: var(--fonte-corpo);
+      font-size: 26px;
+      font-weight: 700;
+      line-height: 1;
+      padding: 0 0 4px;
+      cursor: pointer;
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+      transition: right 0.35s ease, background 0.2s;
+    }
+    .legenda-puxador.recolhido { right: 6px; }
+    .legenda-puxador:hover { background: rgba(200,150,12,0.25); }
+    .controles {
+      position: absolute;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      z-index: 13;
+    }
+    .grupo-zoom {
+      display: flex;
+      align-items: center;
+      border: 1px solid rgba(200,150,12,0.5);
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(31,42,46,0.7);
+    }
+    .grupo-zoom .btn {
+      border: none;
+      background: transparent;
+      border-radius: 0;
+      padding: 9px 14px;
+      font-size: 17px;
+    }
+    .grupo-zoom .btn:hover { background: rgba(200,150,12,0.22); }
+    .grupo-zoom .lupa { padding: 8px 12px; }
+    .btn-fechar {
+      background: rgba(232,90,79,0.32);
+      border-color: rgba(232,90,79,0.6);
+      font-size: 17px;
+      padding: 9px 15px;
+    }
+    .btn-fechar:hover {
+      background: rgba(232,90,79,0.55);
+      border-color: var(--coral-empodia);
+    }
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      background: rgba(10,13,15,0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(3px);
+    }
+    .modal.aberto { display: flex; }
+    .modal-caixa {
+      max-width: 440px;
+      margin: 24px;
+      background: linear-gradient(180deg, rgba(34,44,48,0.98), rgba(24,32,35,0.98));
+      border: 1px solid rgba(200,150,12,0.55);
+      border-radius: 14px;
+      padding: 30px 30px 26px;
+      text-align: center;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.6);
+    }
+    .modal-caixa p {
+      font-family: var(--fonte-titulo);
+      font-size: 19px;
+      line-height: 1.45;
+      margin: 0 0 24px;
+      color: var(--creme-pergaminho);
+    }
+    .modal-acoes {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .btn-sim {
+      background: rgba(200,150,12,0.25);
+      border-color: var(--ouro-pacto);
+    }
+    .btn-sim:hover { background: rgba(200,150,12,0.45); }
+    .btn-nao { background: rgba(31,42,46,0.7); }
+  </style>
+</head>
+<body>
+  <div class="viewport">
+    <div class="mundo">
+      <img class="sala" src="assets/sala.png" alt="A sala">
+      <img class="reveal-tudo" id="revealTudo" src="assets/highlight_all.png" alt="">
+    </div>
+  </div>
+  <p class="intro">Na sala da cabana construída no meio de um campo de flores...</p>
+  <div class="painel">
+    <button class="btn" id="cenaMais" aria-label="Aproximar">+</button>
+    <button class="btn" id="cenaLupa" aria-label="Restaurar zoom">
+      <svg viewBox="0 0 24 24" width="19" height="19" fill="none"
+           stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <circle cx="10.5" cy="10.5" r="6.5"></circle>
+        <line x1="15.5" y1="15.5" x2="21" y2="21"></line>
+      </svg>
+    </button>
+    <button class="btn" id="cenaMenos" aria-label="Afastar">−</button>
+    <button class="btn btn-ajuda tip" id="btnAjuda" data-tip="Destacar tudo" aria-label="Destacar tudo">?</button>
+  </div>
+  <div class="modal" id="modal">
+    <div class="modal-caixa">
+      <p>Todos os objetos interativos serão destacados. Tem certeza que deseja encerrar a busca?</p>
+      <div class="modal-acoes">
+        <button class="btn btn-sim" id="modalSim">Sim, me mostre onde estão!</button>
+        <button class="btn btn-nao" id="modalNao">Não, desejo continuar explorando</button>
+      </div>
+    </div>
+  </div>
+  <div class="overlay" id="overlay">
+    <div class="palco" id="palco">
+      <img class="peca-grande" id="pecaGrande" alt="">
+    </div>
+    <div class="legenda-dock" id="legendaDock">
+      <div class="legenda" id="legenda">
+        <h2 id="legendaTitulo"></h2>
+        <p id="legendaTexto"></p>
+      </div>
+      <button class="legenda-puxador" id="legendaPuxador" aria-label="Ocultar descrição">›</button>
+    </div>
+    <div class="controles" id="controles">
+      <button class="btn" id="btnVirar">Virar</button>
+      <button class="btn" id="btnAbrir">Abrir</button>
+      <button class="btn" id="btnNav">Próxima ›</button>
+      <div class="grupo-zoom">
+        <button class="btn" id="btnMenos" aria-label="Diminuir zoom">−</button>
+        <button class="btn lupa" id="btnLupa" aria-label="Restaurar zoom">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none"
+               stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="10.5" cy="10.5" r="6.5"></circle>
+            <line x1="15.5" y1="15.5" x2="21" y2="21"></line>
+          </svg>
+        </button>
+        <button class="btn" id="btnMais" aria-label="Aumentar zoom">+</button>
+      </div>
+      <button class="btn btn-fechar" id="btnFechar" aria-label="Fechar">✕</button>
+    </div>
+  </div>
+  <script>
+    const PECAS = [
+      {
+        id: "family", rotulo: "Retrato da família",
+        mascara: "assets/highlight_family.png",
+        paginas: [
+          { frente: "assets/family_front.png",
+            verso: "assets/family_back.png",
+            descFrente: { titulo: "Retrato de família em óleo", texto: "Pintura a óleo de tons dourados e quentes. Um casal e uma criança. A mão do homem repousa sobre a criança ao centro, a da mulher em seu ombro, num gesto protetor. \n\n Ele é alto, de cabelo prateado e chifres escuros, o braço esquerdo, coberto de veios negros e roxos, destoa do resto. A mulher, de pele azulada e chifres de carneiro, sorri. A criança, ao centro, tem metade do rosto tocada pela mesma sombra violácea do homem e flores presas nos cachos prateados. \n\n O retrato de família foi pintado com uma técnica impecável e a tinta está fresca, deixando um leve brilho úmido nos cantos. Cheira a óleo e terebintina." },
+            descVerso: { titulo: "Retrato de família em óleo - Verso", texto: "Tela crua e bege esticada sobre as ripas de madeira e os grampos nas bordas. \n\n Na metade inferior, um desenho infantil a giz de cera. Duas figuras de mãos dadas sobre um tufo de grama, cercadas de flores coloridas, sob um sol amarelo e nuvens azuis. \n\n À esquerda, uma figurinha pequena de pele azul, chifres de carneiro, uma florzinha na cabeça, vestido alaranjado e rabinho pontudo. À direita, uma figura mais alta de cabelo louro, óculos redondos, orelhas pontudas e um longo manto azul e roxo. \n\n O traço é simples e afetuoso das mãos de uma criança." }
+          }
+        ]
+      },
+      {
+        id: "wedding", rotulo: "Retrato de casamento",
+        mascara: "assets/highlight_wedding.png",
+        paginas: [
+          {
+            frente: "assets/wedding_front.png",
+            verso: "assets/wedding_back.png",
+            descFrente: { titulo: "Retrato de casamento em óleo", texto: "Pintura a óleo antiga, em moldura de madeira rústica, já com rachaduras finas no verniz, de um casal sob um arco de flores num campo aberto. \n\n Um homem alto de pele bronzeada, cabelo prateado e chifres recurvados, em roupas simples de viagem, com uma marca arroxeada no peito. Ao seu lado, uma mulher de pele azulada, chifres de carneiro e cabelo azul-marinho com flores, em vestido claro de renda, segurando um buquê do campo e sorrindo encostada nele. \n\n No canto inferior direito, uma assinatura que não remete a algum artista conhecido, sendo provavelmente um pintor local." },
+            descVerso: { titulo: "Retrato de casamento em óleo - Verso", texto: "Tela crua de aniagem esticada sobre o chassi de madeira, com cantoneiras, argolas de metal e a moldura rústica ao redor, sem marcas ou inscrições." }
+          }
+        ]
+      },
+      {
+        id: "wanted", rotulo: "Cartaz de procurado",
+        mascara: "assets/highlight_wanted.png",
+        paginas: [
+          {
+            frente: "assets/wanted_front.png",
+            verso: "assets/wanted_back.png",
+            descFrente: { titulo: "Cartaz de Procurado", texto: "Antigo cartaz de procurado com marcas de dobra e amassados.\nEm volta da ilustração do criminoso em traço de tinta está escrito em letras garrafais: \n\n\"ADMINISTRAÇÃO IMPERIAL DE EMPÓDIA\nEXÉRCITO DOURADO · GUARNIÇÃO DE MAGNEA\n\nPROCURADO\nPor alta traição, insurreição e deserção\n\nEX-COMANDANTE URAMI\ninfernis · cabelos brancos · chifres negros · olhos âmbar · braço esquerdo negro\n\nRECOMPENSA 10.000 Au\n\nCuidado! Extremamente violento e perigoso!\"" },
+            descVerso: { titulo: "Cartaz de Procurado - Verso", texto: "Verso do cartaz, vincado pelas dobras. No canto inferior direito, um bilhete manuscrito em tinta azul.\n\n\"Achei que você gostaria de levar um desses de lembrança.\nEstamos vendo sua cara feia estampada na cidade toda.\nAté acho que o artista foi gentil... Eu teria feito bem mais assustador!\nSe cuida.\nEx-sargento Brynja\n(Não tão violenta, mas muito mais perigosa!)\"" }
+          }
+        ]
+      },
+      {
+        id: "yondara", rotulo: "Retrato de Yondara",
+        mascara: "assets/highlight_yondara.png",
+        paginas: [
+          {
+            frente: "assets/yondara_front.png",
+            verso: "assets/yondara_back_closed.png",
+            versoAberto: "assets/yondara_back_open.png",
+            descFrente: { titulo: "Retrato de Infernis", texto: "Pequeno retrato oval em moldura dourada ornamentada, de volutas e contas. Mostra uma mulher de pele azulada, chifres de carneiro e cabelo escuro ondulado, em vestido dourado, segurando um buquê de flores do campo. Sorri abertamente, com flores presas no cabelo." },
+            descVerso: { titulo: "Retrato de Infernis - Verso", texto: "O verso do porta-retrato de madeira escura entalhada, no mesmo formato oval da moldura. Presilhas de metal seguram a placa de trás, e no alto há uma argola de metal, permitindo a abertura." },
+            descVersoAberto: { titulo: "Retrato de Infernis - Aberto", texto: "A placa de trás removida revela o interior claro do oval, vazio. Escrito à mão uma única palavra: \"Yondara\"" }
+          }
+        ]
+      },
+      {
+        id: "uramitainozu", rotulo: "Quadro da tropa de Urami",
+        mascara: "assets/highlight_uramitainozu.png",
+        paginas: [
+          {
+            frente: "assets/uramitainozu_front.png",
+            verso: "assets/uramitainozu_back.png",
+            descFrente: { titulo: "Ilustração de esquadrão", texto: "Gravura em estilo oriental, com moldura de padrão de ondas e bordas de nuvens estilizadas. Quatro guerreiros em armadura lamelar sobre um terreno árido. Ao centro, erguido sobre uma elevação, um infernis de cabelo branco e chifres recurvados, torso à mostra, com o braço esquerdo coberto de manchas roxas. À sua frente, um orc de pele verde com uma glaive e uma anã ruiva barbada com um machado. À direita, um meio-elfo de cabelo escuro com arco e aljava." },
+            descVerso: { titulo: "Ilustração de esquadrão - Verso", texto: "Verso do quadro, emoldurado por um padrão de ondas, com um selo vermelho no canto inferior esquerdo.\n\nUma legenda impressa no alto: \n\n\"Urami-tai no zu — Figura do Esquadrão de Urami\nErguem-se sob o estandarte:\n• Urami, o braço da fúria\n• Vesk, a lâmina do céu\n• Brynja, a dama do machado esmagador\n• Caelo, a flecha perseguidora\nEra de Ouro, Ano 575\"\n\nE um bilhete manuscrito embaixo:\n\n\"Ao comandante Urami\nSei que tua humildade não lhe permite aceitar que já és uma lenda.\nTambém conheço tua aversão a presentes, louvores e elogios.\nCerto de que detestará em todos os aspectos, encomendei ao melhor artista de Magnea que nos imortalizasse sob teu comando.\nAssim, nos dias em que formos menos que quatro, ainda estaremos juntos aqui.\n- Caelo\"" }
+          }
+        ]
+      },
+      {
+        id: "letters", rotulo: "Cartas sobre a mesa",
+        mascara: "assets/highlight_letters.png",
+        paginas: [
+          {
+            frente: "assets/letters-1_front.png",
+            verso: "assets/letters-1_back.png",
+            descFrente: { titulo: "Primeira carta", texto: "Correspondência datilografada do 1º Cartório de Miras, selo de cera vermelho no topo, assinada à mão ao final.\n\n\"Miras, 23 de Jaudene\n18º ano, Era das Flores\n\nAo\nSr. Zylos Pomoch\n\n     Encaminhamos o resultado da consulta formulada aos registros civis de Miras:\n=========================================================\nNome: \"Yondara\" (sem nome de família)\nDescrição: infernis, pele azul, cabelos escuros, olhos lilás, chifres claros em espiral\nResidência: Favilla - Cerulea do Norte\nOcupação: florista\nEstado civil: casada\nSituação: falecida\nCausa da morte: complicações do parto\nParentes vivos: \"Urami\" (marido) e \"Mirabel\" (filha).\nObs.: marido ameaçou o censor durante a visita e a multa aplicada permanece em aberto.\n=========================================================\n     Sentimos que o genitor, \"Urami\", também tenha perecido nesse outono, mas agradecemos a informação e atualizaremos o cadastro.\n     Sobre a infante em posse de Vsa. Senhoria, acreditamos se tratar de \"Mirabel\", pelas características descritas.\n     Diante da ausência de parentes, orientamos que a entregue para instituição de acolhimento. Podemos buscar vagas em orfanatos para recebê-la em Miras, se houver interesse.\n     Sua correspondência despertou grande interesse desse tabelionato. Em nossos registros, a linhagem Pomoch é considerada extinta desde muito antes da fundação de Miras.\n     Muito me alegra saber que sua prestigiosa família persiste. Deixo convite para que nos visite quando estiver na cidade para contar essa fascinante história.\n\n     Atenciosamente\n\nMirith Vieroslava\nTabeliã do 1º Cartório de Miras" },
+            descVerso: { titulo: "Primeira carta - Verso", texto: "Papel de boa qualidade dobrado, selo de cera vermelho no topo, carimbo circular do \"POMBO CORREIO\" e um selo postal com um cavalo branco. No canto esquerdo, o endereço.\n\n\"Ao\nSr. Zylos Pomoch\nVilarejo de Favilla\nCabana no Campo de Flores\nRedondezas de Miras\nCerulea do Norte\"" }
+          },
+          {
+            frente: "assets/letters-2_front.png",
+            verso: "assets/letters-2_back.png",
+            descFrente: { titulo: "Segunda carta", texto: "Correspondência datilografada do 1º Cartório de Miras, assinada à mão ao final.\n\n\"Miras, 16 de Tamsir\n18º ano, Era das Flores\n\nAo\nSr. Zylos Pomoch\n\n     Agradeço o retorno e fico feliz em saber que vive confortavelmente na antiga residência do casal em meio a tão bela natureza.\n     Quanto ao pedido de registro de \"Mirabel\" como filha e herdeira de Vsa. Senhoria, temo que não será simples.\n     Sobre a filiação, mortos os genitores e sem parentes vivos, ninguém disputa a guarda. Ratificada perante duas testemunhas, a criança passa a constar \"Mirabel Pomoch\", filha de \"Zylos Pomoch\".\n     Contudo, a herança da linhagem \"Pomoch\" deverá ser reconhecida pela Coroa - S.M. \"Mallen\" - e pelo Conselho das Antigas Casas - SS.AA. \"Arcalion\", \"Severian\", \"Vandrel\", \"Thren\" e \"Elos\".\n     Sendo franca, para nomear um herdeiro, é preciso primeiro provar que a Casa vive, o que poderá ser feito por Vsa. Senhoria em pessoa perante a Chancelaria.\n     A questão fica ainda mais complexa, pois a casa \"Pomoch\" supera em antiguidade as demais, sendo, pelas nossas leis, herdeira natural do trono ou, no mínimo, merecedora de assento no Conselho.\n     Excedendo meus deveres de ofício, permito-me um aviso honesto: a lendária casa élfica reerguendo-se para nomear herdeira uma infernis não passará despercebida. Ainda há entre nós muitos que zelam pela pureza das linhagens.\n     Resta em aberto a multa em nome de \"Urami\" sobre a residência, a qual convém quitar antes que os atos tramitem.\n     No mais, renovo o convite com maior efusividade, pois todas as questões se resolvem com vossa presença em Miras.\n\n     Atenciosamente\n\nMirith Vieroslava\nTabeliã do 1º Cartório de Miras\"" },
+            descVerso: { titulo: "Segunda carta - Verso", texto: "Papel de boa qualidade dobrado, selo de cera vermelho no topo, carimbo circular do \"POMBO CORREIO\" e um selo postal com uma pomba branca. No canto esquerdo, o endereço.\n\n\"Ao\nSr. Zylos Pomoch\nVilarejo de Favilla\nCabana no Campo de Flores\nRedondezas de Miras\nCerulea do Norte\"" }
+          }
+        ]
+      }
+    ];
+    const mundo = document.querySelector(".mundo");
+    const sala = document.querySelector(".sala");
+    const viewport = document.querySelector(".viewport");
+    const overlay = document.getElementById("overlay");
+    const palco = document.getElementById("palco");
+    const pecaGrande = document.getElementById("pecaGrande");
+    const btnVirar = document.getElementById("btnVirar");
+    const btnAbrir = document.getElementById("btnAbrir");
+    const btnNav = document.getElementById("btnNav");
+    const btnMenos = document.getElementById("btnMenos");
+    const btnLupa = document.getElementById("btnLupa");
+    const btnMais = document.getElementById("btnMais");
+    const btnFechar = document.getElementById("btnFechar");
+    const legenda = document.getElementById("legenda");
+    const legendaTitulo = document.getElementById("legendaTitulo");
+    const legendaTexto = document.getElementById("legendaTexto");
+    const legendaPuxador = document.getElementById("legendaPuxador");
+    const legendaDock = document.getElementById("legendaDock");
+    const revealTudo = document.getElementById("revealTudo");
+    const btnAjuda = document.getElementById("btnAjuda");
+    const modal = document.getElementById("modal");
+    const modalSim = document.getElementById("modalSim");
+    const modalNao = document.getElementById("modalNao");
+    const cenaMais = document.getElementById("cenaMais");
+    const cenaMenos = document.getElementById("cenaMenos");
+    const cenaLupa = document.getElementById("cenaLupa");
+    PECAS.forEach(function (peca) {
+      const img = document.createElement("img");
+      img.className = "mascara";
+      img.alt = "";
+      mundo.insertBefore(img, revealTudo);
+      peca.elemento = img;
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      peca.canvas = canvas;
+      peca.ctx = ctx;
+      img.onload = function () {
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        ctx.drawImage(img, 0, 0);
+      };
+      img.src = peca.mascara;
+    });
+    function pecaNoPonto(clientX, clientY) {
+      const r = sala.getBoundingClientRect();
+      const fx = (clientX - r.left) / r.width;
+      const fy = (clientY - r.top) / r.height;
+      if (fx < 0 || fx > 1 || fy < 0 || fy > 1) return null;
+      for (let i = PECAS.length - 1; i >= 0; i--) {
+        const peca = PECAS[i];
+        const cw = peca.canvas.width;
+        const ch = peca.canvas.height;
+        if (!cw) continue;
+        const escalaCover = Math.max(r.width / cw, r.height / ch);
+        const larguraDesenhada = cw * escalaCover;
+        const alturaDesenhada  = ch * escalaCover;
+        const corteX = (larguraDesenhada - r.width) / 2;
+        const corteY = (alturaDesenhada - r.height) / 2;
+        const px = Math.floor((fx * r.width  + corteX) / escalaCover);
+        const py = Math.floor((fy * r.height + corteY) / escalaCover);
+        if (px < 0 || px >= cw || py < 0 || py >= ch) continue;
+        const pixel = peca.ctx.getImageData(px, py, 1, 1).data;
+        if (pixel[3] > 30) return peca;
+      }
+      return null;
+    }
+    let revelado = false;
+    function destacar(pecaAtiva) {
+      if (revelado) return;
+      PECAS.forEach(function (peca) {
+        if (peca === pecaAtiva) {
+          peca.elemento.classList.add("ativa");
+        } else {
+          peca.elemento.classList.remove("ativa");
+        }
+      });
+    }
+    function ligarReveal() {
+      revelado = true;
+      PECAS.forEach(function (peca) { peca.elemento.classList.remove("ativa"); });
+      revealTudo.classList.add("ativa");
+      btnAjuda.classList.add("ligado");
+      btnAjuda.setAttribute("data-tip", "Remover destaque");
+      btnAjuda.setAttribute("aria-label", "Remover destaque");
+    }
+    function desligarReveal() {
+      revelado = false;
+      revealTudo.classList.remove("ativa");
+      btnAjuda.classList.remove("ligado");
+      btnAjuda.setAttribute("data-tip", "Destacar tudo");
+      btnAjuda.setAttribute("aria-label", "Destacar tudo");
+    }
+    btnAjuda.addEventListener("click", function () {
+      if (revelado) {
+        desligarReveal();
+      } else {
+        modal.classList.add("aberto");
+      }
+    });
+    modalSim.addEventListener("click", function () {
+      modal.classList.remove("aberto");
+      ligarReveal();
+    });
+    modalNao.addEventListener("click", function () {
+      modal.classList.remove("aberto");
+    });
+    modal.addEventListener("click", function (e) {
+      if (e.target === modal) modal.classList.remove("aberto");
+    });
+    let pecaAtual = null;
+    let paginaAtual = 0;
+    let mostrandoVerso = false;
+    let aberto = false;
+    let navDir = 1;
+    let zEscala = 1;
+    let zX = 0;
+    let zY = 0;
+    const Z_MIN = 1;
+    const Z_MAX = 4;
+    const Z_PASSO = 0.4;
+    function aplicarZoomPeca() {
+      pecaGrande.style.transform = `translate(${zX}px, ${zY}px) scale(${zEscala})`;
+    }
+    function limitarZoomPeca() {
+      const r = palco.getBoundingClientRect();
+      const limiteX = (r.width  * (zEscala - 1)) / 2;
+      const limiteY = (r.height * (zEscala - 1)) / 2;
+      if (zX >  limiteX) zX =  limiteX;
+      if (zX < -limiteX) zX = -limiteX;
+      if (zY >  limiteY) zY =  limiteY;
+      if (zY < -limiteY) zY = -limiteY;
+    }
+    function resetZoomPeca() {
+      zEscala = 1; zX = 0; zY = 0;
+      aplicarZoomPeca();
+    }
+    function setZoomPeca(novo) {
+      const anterior = zEscala;
+      zEscala = Math.min(Z_MAX, Math.max(Z_MIN, novo));
+      const fator = zEscala / anterior;
+      zX = zX * fator;
+      zY = zY * fator;
+      limitarZoomPeca();
+      aplicarZoomPeca();
+    }
+    function atualizarLegenda(pagina) {
+      let desc;
+      if (mostrandoVerso) {
+        desc = (aberto && pagina.descVersoAberto) ? pagina.descVersoAberto : pagina.descVerso;
+      } else {
+        desc = pagina.descFrente;
+      }
+      if (desc && desc.texto) {
+        legendaTitulo.textContent = desc.titulo || "";
+        legendaTexto.textContent = desc.texto;
+        legendaDock.classList.add("visivel");
+        legenda.classList.remove("recolhida");
+        legendaPuxador.classList.remove("recolhido");
+        legendaPuxador.textContent = "›";
+      } else {
+        legendaDock.classList.remove("visivel");
+      }
+    }
+    legendaPuxador.addEventListener("click", function () {
+      const recolhida = legenda.classList.toggle("recolhida");
+      legendaPuxador.classList.toggle("recolhido", recolhida);
+      legendaPuxador.textContent = recolhida ? "‹" : "›";
+    });
+    function renderizar() {
+      const pagina = pecaAtual.paginas[paginaAtual];
+      let src;
+      if (mostrandoVerso) {
+        src = (aberto && pagina.versoAberto) ? pagina.versoAberto : pagina.verso;
+      } else {
+        src = pagina.frente;
+      }
+      pecaGrande.src = src;
+      pecaGrande.alt = pecaAtual.rotulo;
+      resetZoomPeca();
+      atualizarLegenda(pagina);
+      const podeAbrir = mostrandoVerso && !!pagina.versoAberto;
+      btnVirar.hidden = !pagina.verso || aberto;
+      btnAbrir.hidden = !podeAbrir;
+      btnAbrir.textContent = aberto ? "Fechar" : "Abrir";
+      const temVarias = pecaAtual.paginas.length > 1;
+      btnNav.hidden = !temVarias;
+      if (temVarias) {
+        const ultima = pecaAtual.paginas.length - 1;
+        if (paginaAtual === ultima) {
+          btnNav.textContent = "‹ Anterior";
+        } else if (paginaAtual === 0) {
+          btnNav.textContent = "Próxima ›";
+        } else {
+          btnNav.textContent = navDir === 1 ? "Próxima ›" : "‹ Anterior";
+        }
+      }
+    }
+    function abrirPeca(peca) {
+      pecaAtual = peca;
+      paginaAtual = 0;
+      mostrandoVerso = false;
+      aberto = false;
+      navDir = 1;
+      renderizar();
+      overlay.classList.add("aberto");
+    }
+    function fecharPeca() {
+      overlay.classList.remove("aberto");
+      legendaDock.classList.remove("visivel");
+      pecaAtual = null;
+    }
+    btnVirar.addEventListener("click", function () {
+      mostrandoVerso = !mostrandoVerso;
+      aberto = false;
+      renderizar();
+    });
+    btnAbrir.addEventListener("click", function () {
+      aberto = !aberto;
+      renderizar();
+    });
+    btnNav.addEventListener("click", function () {
+      const ultima = pecaAtual.paginas.length - 1;
+      if (paginaAtual === ultima) navDir = -1;
+      else if (paginaAtual === 0) navDir = 1;
+      paginaAtual += navDir;
+      mostrandoVerso = false;
+      aberto = false;
+      renderizar();
+    });
+    btnFechar.addEventListener("click", fecharPeca);
+    btnMais.addEventListener("click", function () { setZoomPeca(zEscala + Z_PASSO); });
+    btnMenos.addEventListener("click", function () { setZoomPeca(zEscala - Z_PASSO); });
+    btnLupa.addEventListener("click", resetZoomPeca);
+    palco.addEventListener("wheel", function (e) {
+      e.preventDefault();
+      setZoomPeca(zEscala + (e.deltaY < 0 ? Z_PASSO * 0.6 : -Z_PASSO * 0.6));
+    }, { passive: false });
+    let pArrasta = false;
+    let pIniX = 0;
+    let pIniY = 0;
+    let pMoveu = 0;
+    palco.addEventListener("pointerdown", function (e) {
+      pMoveu = 0;
+      if (zEscala <= 1) return;
+      pArrasta = true;
+      pIniX = e.clientX - zX;
+      pIniY = e.clientY - zY;
+      palco.classList.add("arrastando");
+      pecaGrande.classList.add("arrastando-peca");
+      palco.setPointerCapture(e.pointerId);
+    });
+    palco.addEventListener("pointermove", function (e) {
+      if (!pArrasta) return;
+      const novoX = e.clientX - pIniX;
+      const novoY = e.clientY - pIniY;
+      pMoveu += Math.abs(novoX - zX) + Math.abs(novoY - zY);
+      zX = novoX;
+      zY = novoY;
+      limitarZoomPeca();
+      aplicarZoomPeca();
+    });
+    palco.addEventListener("pointerup", function () {
+      pArrasta = false;
+      palco.classList.remove("arrastando");
+      pecaGrande.classList.remove("arrastando-peca");
+    });
+    palco.addEventListener("click", function (e) {
+      if (e.target === palco && pMoveu < 6) fecharPeca();
+    });
+    pecaGrande.addEventListener("dragstart", (e) => e.preventDefault());
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") {
+        if (modal.classList.contains("aberto")) { modal.classList.remove("aberto"); return; }
+        fecharPeca();
+      }
+    });
+    let escala = 1;
+    let deslocX = 0;
+    let deslocY = 0;
+    const ESCALA_MIN = 1;
+    const ESCALA_MAX = 2.5;
+    const PASSO = 0.15;
+    function aplicar() {
+      mundo.style.transform = `translate(${deslocX}px, ${deslocY}px) scale(${escala})`;
+    }
+    function limitar() {
+      const limiteX = (viewport.clientWidth  * (escala - 1)) / 2;
+      const limiteY = (viewport.clientHeight * (escala - 1)) / 2;
+      if (deslocX >  limiteX) deslocX =  limiteX;
+      if (deslocX < -limiteX) deslocX = -limiteX;
+      if (deslocY >  limiteY) deslocY =  limiteY;
+      if (deslocY < -limiteY) deslocY = -limiteY;
+    }
+    function aplicarZoomCena(novo) {
+      const escalaAnterior = escala;
+      escala = Math.min(ESCALA_MAX, Math.max(ESCALA_MIN, novo));
+      const fator = escala / escalaAnterior;
+      deslocX = deslocX * fator;
+      deslocY = deslocY * fator;
+      limitar();
+      aplicar();
+    }
+    cenaMais.addEventListener("click", function () { aplicarZoomCena(escala + PASSO * 2); });
+    cenaMenos.addEventListener("click", function () { aplicarZoomCena(escala - PASSO * 2); });
+    cenaLupa.addEventListener("click", function () {
+      escala = 1; deslocX = 0; deslocY = 0; aplicar();
+    });
+    viewport.addEventListener("wheel", function (e) {
+      e.preventDefault();
+      aplicarZoomCena(escala + (e.deltaY < 0 ? PASSO : -PASSO));
+    }, { passive: false });
+    let arrastando = false;
+    let inicioX = 0;
+    let inicioY = 0;
+    let moveu = 0;
+    viewport.addEventListener("pointerdown", function (e) {
+      arrastando = true;
+      moveu = 0;
+      inicioX = e.clientX - deslocX;
+      inicioY = e.clientY - deslocY;
+      viewport.style.cursor = "grabbing";
+      mundo.classList.add("arrastando-cena");
+    });
+    viewport.addEventListener("pointermove", function (e) {
+      if (arrastando) {
+        const novoX = e.clientX - inicioX;
+        const novoY = e.clientY - inicioY;
+        moveu += Math.abs(novoX - deslocX) + Math.abs(novoY - deslocY);
+        deslocX = novoX;
+        deslocY = novoY;
+        limitar();
+        aplicar();
+      } else {
+        destacar(pecaNoPonto(e.clientX, e.clientY));
+      }
+    });
+    viewport.addEventListener("pointerup", function (e) {
+      arrastando = false;
+      viewport.style.cursor = "grab";
+      mundo.classList.remove("arrastando-cena");
+      if (moveu < 6) {
+        const peca = pecaNoPonto(e.clientX, e.clientY);
+        if (peca) abrirPeca(peca);
+      }
+    });
+    mundo.addEventListener("dragstart", (e) => e.preventDefault());
+    window.addEventListener("resize", function () {
+      limitar();
+      aplicar();
+    });
+  </script>
+</body>
+</html>
